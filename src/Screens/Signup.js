@@ -1,16 +1,17 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import { loadBlockchainData, loadWeb3 } from "../Web3helpers";
 
 import { useNavigate } from "react-router-dom";
+
 export default function SignUp() {
-  const [username, setUsername] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
 
-  const [accounts, setAccounts] = React.useState(null);
-  const [auth, setAuth] = React.useState(null);
+  const [accounts, setAccounts] = useState(null);
+  const [auth, setAuth] = useState(null);
 
   const loadAccounts = async () => {
     let { auth, accounts } = await loadBlockchainData();
@@ -21,18 +22,16 @@ export default function SignUp() {
 
   const signUp = async () => {
     if (!username || !email || !password) {
-      alert("please fill all details");
+      alert("Please fill in all details.");
       return;
     }
     var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (!email.match(mailformat)) {
-      alert("please enter valid email address");
+      alert("Please enter a valid email address.");
       return;
     }
     try {
-      await auth.methods
-        .createUser(username, email, password)
-        .send({ from: accounts });
+      await auth.methods.createUser(username, email, password).send({ from: accounts });
 
       localStorage.setItem("username", username);
       localStorage.setItem("email", email);
@@ -42,11 +41,9 @@ export default function SignUp() {
       console.log(e.message);
     }
   };
-  React.useEffect(() => {
-    loadWeb3();
-  }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    loadWeb3();
     loadAccounts();
   }, []);
 
@@ -79,7 +76,6 @@ export default function SignUp() {
         type="password"
       />
       <button style={button} onClick={signUp}>
-        {" "}
         Sign Up
       </button>
     </div>
